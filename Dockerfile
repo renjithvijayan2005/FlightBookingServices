@@ -1,5 +1,5 @@
 # ─── Stage 1: Build ───────────────────────────────────────────────────────
-FROM maven:3.9.6-eclipse-temurin-21-alpine AS builder
+FROM maven:3.9.6-eclipse-temurin-17-alpine AS builder
 WORKDIR /app
 
 # Cache dependencies layer separately (only re-runs when pom.xml changes)
@@ -10,7 +10,7 @@ COPY src ./src
 RUN mvn package -DskipTests -q
 
 # ─── Stage 2: Runtime ─────────────────────────────────────────────────────
-FROM eclipse-temurin:21-jre-alpine AS runtime
+FROM eclipse-temurin:17-jre-alpine AS runtime
 
 # Security: run as non-root
 RUN addgroup -S appgroup && adduser -S appuser -G appgroup

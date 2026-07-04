@@ -87,6 +87,6 @@ class AmadeusApiServiceTest {
         assertThat(firstToken).isEqualTo("sandbox-token");
         assertThat(secondToken).isEqualTo("sandbox-token");
         verify(restTemplate).postForEntity(eq("https://example.test/oauth/token"), any(HttpEntity.class), eq(JsonNode.class));
-                verify(valueOperations, times(1)).get("amadeus:access_token");
+        verify(valueOperations, times(1)).get("amadeus:access_token");
     }
 }
