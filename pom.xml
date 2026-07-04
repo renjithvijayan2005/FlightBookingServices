@@ -18,7 +18,7 @@
     <description>Flight Ticket Booking System with Amadeus Integration</description>
 
     <properties>
-        <java.version>21</java.version>
+        <java.version>17</java.version>
         <lombok.version>1.18.32</lombok.version>
     </properties>
 
