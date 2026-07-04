@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <style>
+    body{font-family:Arial,sans-serif;background:#f5f5f5;margin:0;padding:0}
+    .wrapper{max-width:600px;margin:40px auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+    .header{background:#1a56db;color:#fff;padding:32px 40px}
+    .header h1{margin:0;font-size:24px}
+    .header p{margin:4px 0 0;opacity:.85}
+    .body{padding:32px 40px}
+    .ref-box{background:#f0f4ff;border-left:4px solid #1a56db;padding:16px 20px;border-radius:4px;margin-bottom:24px}
+    .ref-box .label{font-size:12px;color:#6b7280;text-transform:uppercase;letter-spacing:.05em}
+    .ref-box .value{font-size:22px;font-weight:700;color:#1a56db;letter-spacing:.1em}
+    .key-box{background:#fef3c7;border-left:4px solid #f59e0b;padding:16px 20px;border-radius:4px;margin-bottom:24px}
+    .key-box .label{font-size:12px;color:#92400e;text-transform:uppercase;letter-spacing:.05em}
+    .key-box .value{font-size:18px;font-weight:700;color:#92400e;letter-spacing:.05em}
+    .section{margin-bottom:24px}
+    .section h3{font-size:14px;text-transform:uppercase;color:#6b7280;letter-spacing:.05em;margin:0 0 12px}
+    table.detail{width:100%;border-collapse:collapse}
+    table.detail td{padding:8px 0;border-bottom:1px solid #f3f4f6;font-size:14px}
+    table.detail td:first-child{color:#6b7280;width:40%}
+    table.detail td:last-child{font-weight:600;color:#111827}
+    .luggage-item{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #f3f4f6;font-size:14px}
+    .total-row{display:flex;justify-content:space-between;padding:12px 0;font-size:16px;font-weight:700;color:#111827;border-top:2px solid #1a56db;margin-top:8px}
+    .warning{background:#fef2f2;border-left:4px solid #ef4444;padding:12px 16px;border-radius:4px;font-size:13px;color:#991b1b;margin-bottom:24px}
+    .footer{background:#f9fafb;padding:24px 40px;text-align:center;font-size:12px;color:#9ca3af}
+    .footer a{color:#1a56db}
+  </style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="header">
+    <h1>✈ Soul of Trips</h1>
+    <p>Your booking is confirmed</p>
+  </div>
+  <div class="body">
+    <p>Dear <strong th:text="${booking.contactName}">Traveller</strong>,</p>
+    <p>Thank you for booking with Soul of Trips. Your booking is confirmed and details are below.</p>
+
+    <div class="ref-box">
+      <div class="label">Booking Reference</div>
+      <div class="value" th:text="${booking.bookingReference}">BK12345678</div>
+    </div>
+
+    <div class="key-box">
+      <div class="label">Confirmation Key — save this to manage your booking</div>
+      <div class="value" th:text="${confirmationKey}">ABCD1234EFGH5678</div>
+    </div>
+
+    <div class="section" th:if="${booking.flight != null}">
+      <h3>Flight Details</h3>
+      <table class="detail">
+        <tr><td>Flight</td><td th:text="${booking.flight.flightNumber}">—</td></tr>
+        <tr><td>From</td><td th:text="${booking.flight.originAirport?.airportCode + ' — ' + booking.flight.originAirport?.city}">—</td></tr>
+        <tr><td>To</td><td th:text="${booking.flight.destinationAirport?.airportCode + ' — ' + booking.flight.destinationAirport?.city}">—</td></tr>
+        <tr><td>Departure</td><td th:text="${#temporals.format(booking.flight.departureDateTime,'dd MMM yyyy HH:mm')}">—</td></tr>
+        <tr><td>Arrival</td><td th:text="${#temporals.format(booking.flight.arrivalDateTime,'dd MMM yyyy HH:mm')}">—</td></tr>
+        <tr><td>Cabin Class</td><td th:text="${booking.flight.cabinClass}">ECONOMY</td></tr>
+        <tr><td>Passengers</td><td th:text="${booking.numPassengers}">1</td></tr>
+      </table>
+    </div>
+
+    <div class="section" th:if="${luggageItems != null and !luggageItems.isEmpty()}">
+      <h3>Luggage Add-ons</h3>
+      <div th:each="item : ${luggageItems}" class="luggage-item">
+        <span th:text="${item.luggageOption.name + ' × ' + item.quantity}">—</span>
+        <span th:text="'$' + ${#numbers.formatDecimal(item.pricePerUnit * item.quantity, 1, 2)}">$0.00</span>
+      </div>
+    </div>
+
+    <div class="section">
+      <h3>Pricing</h3>
+      <table class="detail">
+        <tr><td>Flight Total</td><td th:text="'$' + ${#numbers.formatDecimal(booking.totalAmount, 1, 2)}">$0.00</td></tr>
+        <tr th:if="${booking.luggageTotal?.compareTo(0) > 0}">
+          <td>Luggage Total</td>
+          <td th:text="'$' + ${#numbers.formatDecimal(booking.luggageTotal, 1, 2)}">$0.00</td>
+        </tr>
+      </table>
+      <div class="total-row">
+        <span>Grand Total</span>
+        <span th:text="'$' + ${#numbers.formatDecimal((booking.totalAmount ?: 0) + (booking.luggageTotal ?: 0), 1, 2)}">$0.00</span>
+      </div>
+    </div>
+
+    <div class="warning">
+      <strong>Important:</strong> Keep your Confirmation Key safe. You will need it along with your Booking Reference to modify or cancel this booking at <a href="#">souloftrips.com/manage</a>.
+    </div>
+  </div>
+  <div class="footer">
+    <p>Soul of Trips &bull; support@souloftrips.com</p>
+    <p>This email was sent because you made a booking on Soul of Trips.<br/>
+    Your data is stored in accordance with our <a href="#">Privacy Policy</a> and <a href="#">Terms &amp; Conditions</a>.</p>
+  </div>
+</div>
+</body>
+</html>

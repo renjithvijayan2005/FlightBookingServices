@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <style>
+    body{font-family:Arial,sans-serif;background:#f5f5f5;margin:0;padding:0}
+    .wrapper{max-width:600px;margin:40px auto;background:#fff;border-radius:8px;overflow:hidden;box-shadow:0 2px 8px rgba(0,0,0,.1)}
+    .header{background:#dc2626;color:#fff;padding:32px 40px}
+    .header h1{margin:0;font-size:24px}
+    .body{padding:32px 40px}
+    .ref-box{background:#fef2f2;border-left:4px solid #dc2626;padding:16px 20px;border-radius:4px;margin-bottom:24px}
+    .ref-box .value{font-size:20px;font-weight:700;color:#dc2626}
+    table.detail{width:100%;border-collapse:collapse}
+    table.detail td{padding:8px 0;border-bottom:1px solid #f3f4f6;font-size:14px}
+    table.detail td:first-child{color:#6b7280;width:40%}
+    table.detail td:last-child{font-weight:600;color:#111827}
+    .footer{background:#f9fafb;padding:24px 40px;text-align:center;font-size:12px;color:#9ca3af}
+  </style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="header">
+    <h1>✈ Soul of Trips</h1>
+  </div>
+  <div class="body">
+    <h2 style="color:#dc2626;margin:0 0 8px">Booking Cancelled</h2>
+    <p>Dear <strong th:text="${booking.contactName}">Traveller</strong>,</p>
+    <p>Your booking has been cancelled. A refund will be processed within 5–10 business days.</p>
+
+    <div class="ref-box">
+      <div style="font-size:12px;color:#dc2626;text-transform:uppercase;letter-spacing:.05em">Cancelled Booking Reference</div>
+      <div class="value" th:text="${booking.bookingReference}">BK12345678</div>
+    </div>
+
+    <table class="detail">
+      <tr><td>Status</td><td style="color:#dc2626" th:text="${booking.status}">CANCELLED</td></tr>
+      <tr><td>Refund Status</td><td th:text="${booking.paymentStatus}">REFUNDED</td></tr>
+      <tr><td>Original Amount</td><td th:text="'$' + ${#numbers.formatDecimal((booking.totalAmount ?: 0) + (booking.luggageTotal ?: 0), 1, 2)}">$0.00</td></tr>
+    </table>
+
+    <p style="margin-top:24px;font-size:14px;color:#6b7280;">
+      If you have any questions, please contact us at <strong>support@souloftrips.com</strong>.
+    </p>
+  </div>
+  <div class="footer">
+    <p>Soul of Trips &bull; support@souloftrips.com</p>
+  </div>
+</div>
+</body>
+</html>
